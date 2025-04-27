@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{cite}
+
+\geometry{margin=1in}
+\title{Proposal: Investigating the Impact of Higher-Degree NLFSR Feedback Functions on Cryptographic Strength and Periodicity}
+\author{
+    Abdulmumin Sa'ad \\ 
+    Mohammed Mansour \\
+    Supervised by: Prof. S. Almuhammadi \\
+    King Fahd University of Petroleum and Minerals (KFUPM)
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Nonlinear Feedback Shift Registers (NLFSRs) are widely used in cryptographic systems for generating pseudorandom sequences. While prior work, including Ibraheem and Almuhammadi (2019), has focused on feedback functions of degree 3, there exists a gap in exploring the effects of feedback functions of higher degrees (e.g., degree 4 or above). This proposal aims to construct, analyze, and compare NLFSR feedback functions of higher algebraic degrees with their lower-degree counterparts, in terms of period optimality, cryptographic strength, and resistance to known attacks.
+\end{abstract}
+
+\section{Introduction}
+NLFSRs offer better security properties than LFSRs due to their nonlinear structure. Prior constructions have largely focused on degrees 2 and 3. Higher degrees could increase resistance against algebraic and low-order approximation attacks, but their practical properties and behavior remain underexplored.
+
+This project proposes a systematic construction and evaluation of NLFSR feedback functions of degree 4 and above, leveraging or extending existing enumeration and period-testing methods.
+
+\section{Objectives}
+\begin{itemize}
+    \item Construct NLFSR feedback functions of degree 4 and above.
+    \item Evaluate their periods and determine which achieve optimal periods (i.e., $2^n - 1$).
+    \item Test the higher-degree functions against potential cryptanalytic attacks (e.g., algebraic attacks, fast correlation attacks, and low-order approximation).
+    \item Explore the trade-offs between increased nonlinearity and computational complexity.
+\end{itemize}
+
+\section{Motivation and Research Gap}
+In the study by Al-Hejri and Almuhammadi~\cite{hejri2019nlfsr}, 140 feedback functions of degree 3 with optimal periods were constructed and added to the 127 previously known functions. However, feedback functions of degree 4 remain largely uncharted. Increasing the algebraic degree can improve resistance to cryptanalytic techniques such as:
+\begin{itemize}
+    \item Algebraic attacks
+    \item Fast correlation attacks
+    \item Low-order approximation
+\end{itemize}
+Yet, the balance between security and computational feasibility needs to be addressed through careful empirical evaluation.
+
+\section{Methodology}
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{Function Generation:} Extend the construction framework introduced in~\cite{almuhammadi2018nlfsr} to systematically enumerate feedback functions of the form:
+    \[
+    f(x_0, \ldots, x_{n-1}) = x_0 \oplus x_a \oplus x_b \oplus x_c x_d x_e x_f
+    \]
+    \item \textbf{Period Testing:} Implement or adapt the period-testing algorithm to validate the period of each function.
+    \item \textbf{Security Metrics:} Evaluate Boolean function properties (nonlinearity, algebraic degree, correlation immunity) using available cryptographic analysis tools.
+    \item \textbf{Comparison:} Perform a comparative study between degree-3 and degree-4 feedback functions across NLFSR sizes $n = 5$ to $25$.
+\end{enumerate}
+
+\section{Expected Contributions}
+\begin{itemize}
+    \item A complete or partial list of NLFSR feedback functions of degree 4 with optimal periods.
+    \item Empirical insights into how increasing the algebraic degree affects security and period optimality.
+    \item Recommendations for future constructions of NLFSRs in cryptographic applications.
+\end{itemize}
+
+\section{Future Work}
+The outcomes of this project can pave the way for:
+\begin{itemize}
+    \item AI-assisted discovery of higher-degree functions with desirable cryptographic properties.
+    \item Integration with FPGA/ASIC design for high-performance sequence generation.
+    \item Exploration of functions with hybrid degrees (mixed terms of degree 2--4).
+\end{itemize}
+
+\bibliogrananphystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{hejri2019nlfsr}
+I. Al-Hejri and S. Almuhammadi,
+\textit{New NLFSR Functions of Degree 3 with Optimal Periods}, 2019.
+
+\bibitem{almuhammadi2018nlfsr}
+S. Almuhammadi, I. Al-Hejri, G. Talib, and A. Gaamel,
+\textit{NLFSR Functions with Optimal Periods}, Proc. International Conference on Computational Science and Its Applications, Springer, 2018.
+\end{thebibliography}
+
+\end{document}
