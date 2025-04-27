@@ -1,34 +1,33 @@
 name: Build Proposal and Deploy PDF
 
 on:
-    push:
-        paths:
-            - 'docs/proposal.tex'
+  push:
+    paths:
+      - 'docs/proposal.tex'
 
 jobs:
-    build-proposal:
-        runs-on: ubuntu-latest
+  build-proposal:
+    runs-on: ubuntu-latest
 
-        steps:
-        - name: Checkout repository
-            uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Needed to push later
 
-        - name: Install texlive-full
-            run: |
-                sudo apt-get update
-                sudo apt-get install -y texlive-full
+      - name: Set up TeX Live
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: docs/proposal.tex
+          working_directory: .
+          output_directory: output
 
-        - name: Build proposal.tex
-            run: |
-                latexmk -pdf -interaction=nonstopmode -output-directory=output docs/proposal.tex
-
-        - name: Upload PDF to deploy branch
-            if: success()
-            run: |
-                git config user.name "GitHub Actions"
-                git config user.email "actions@github.com"
-                git checkout -b deploy || git checkout deploy
-                mv output/proposal.pdf proposal.pdf
-                git add proposal.pdf
-                git commit -m "Update proposal.pdf"
-                git push origin deploy
+      - name: Move and commit generated PDF
+        run: |
+          mv output/proposal.pdf proposal.pdf
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git checkout deploy || git checkout -b deploy
+          git add proposal.pdf
+          git commit -m "Update proposal.pdf" || echo "No changes to commit"
+          git push origin deploy
