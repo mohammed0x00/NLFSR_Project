@@ -1,33 +1,35 @@
-name: Build Proposal and Deploy PDF
+name: Build LaTeX Docs
 
 on:
   push:
+    branches:
+      - deploy
     paths:
-      - 'docs/proposal.tex'
+      - 'docs/**.tex'
+  workflow_dispatch:
 
 jobs:
-  build-proposal:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Needed to push later
 
-      - name: Set up TeX Live
-        uses: xu-cheng/latex-action@v2
-        with:
-          root_file: docs/proposal.tex
-          working_directory: .
-          output_directory: output
-
-      - name: Move and commit generated PDF
+      - name: Install TeX Live (full)
         run: |
-          mv output/proposal.pdf proposal.pdf
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git checkout deploy || git checkout -b deploy
-          git add proposal.pdf
-          git commit -m "Update proposal.pdf" || echo "No changes to commit"
-          git push origin deploy
+          sudo apt-get update
+          sudo apt-get install -y texlive-full
+
+      - name: Compile LaTeX files
+        run: |
+          mkdir -p build
+          for file in docs/*.tex; do
+            pdflatex -output-directory=build "$file"
+          done
+
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: latex-pdfs
+          path: build/*.pdf
