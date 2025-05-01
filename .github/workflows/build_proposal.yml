@@ -1,33 +1,43 @@
-name: Build Proposal and Deploy PDF
+name: Build and Deploy Proposal PDF
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'docs/proposal.tex'
+  workflow_dispatch:
 
 jobs:
-  build-proposal:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout master branch
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Needed to push later
+          fetch-depth: 0  # Needed for full history and switching branches
 
-      - name: Set up TeX Live
-        uses: xu-cheng/latex-action@v2
-        with:
-          root_file: docs/proposal.tex
-          working_directory: .
-          output_directory: output
-
-      - name: Move and commit generated PDF
+      - name: Install TeX Live Full
         run: |
-          mv output/proposal.pdf proposal.pdf
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git checkout deploy || git checkout -b deploy
-          git add proposal.pdf
-          git commit -m "Update proposal.pdf" || echo "No changes to commit"
+          sudo apt-get update
+          sudo apt-get install -y texlive-full
+
+      - name: Compile proposal.tex
+        run: |
+          mkdir -p build
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build docs/proposal.tex
+
+      - name: Switch to deploy branch and update PDF
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git fetch origin deploy:deploy || git checkout --orphan deploy
+          git checkout deploy
+
+          mkdir -p docs
+          cp build/proposal.pdf docs/proposal.pdf
+
+          git add docs/proposal.pdf
+          git commit -m "Update proposal.pdf from master" || echo "No changes to commit"
           git push origin deploy
