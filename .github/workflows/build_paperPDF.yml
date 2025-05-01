@@ -1,0 +1,43 @@
+name: Build and Deploy Machine_Learning-Based_Assessment_of_NLFSR_Strength PDF
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'docs/Machine_Learning-Based_Assessment_of_NLFSR_Strength.tex'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Needed for full history and switching branches
+
+      - name: Install TeX Live Full
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-full
+
+      - name: Compile Machine_Learning-Based_Assessment_of_NLFSR_Strength.tex
+        run: |
+          mkdir -p build
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build docs/Machine_Learning-Based_Assessment_of_NLFSR_Strength.tex
+
+      - name: Switch to deploy branch and update PDF
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git fetch origin deploy:deploy || git checkout --orphan deploy
+          git checkout deploy
+
+          mkdir -p docs
+          cp build/Machine_Learning-Based_Assessment_of_NLFSR_Strength.pdf docs/Machine_Learning-Based_Assessment_of_NLFSR_Strength.pdf
+
+          git add docs/Machine_Learning-Based_Assessment_of_NLFSR_Strength.pdf
+          git commit -m "Update Machine_Learning-Based_Assessment_of_NLFSR_Strength.pdf from master" || echo "No changes to commit"
+          git push origin deploy
