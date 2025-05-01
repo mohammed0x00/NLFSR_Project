@@ -21,7 +21,8 @@ jobs:
       - name: Compile PDF using LaTeX Action
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: docs/Machine_Learning-Based_Assessment_of_NLFSR_Strength.tex
+          root_file: Machine_Learning-Based_Assessment_of_NLFSR_Strength.tex
+          working_directory: docs
           latexmk_use_lualatex: false  # set true if needed
           continue_on_error: false
 
