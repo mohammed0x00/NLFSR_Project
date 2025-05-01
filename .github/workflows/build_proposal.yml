@@ -26,7 +26,7 @@ jobs:
       - name: Compile proposal.tex
         run: |
           mkdir -p build
-          pdflatex -output-directory=build docs/proposal.tex
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build docs/proposal.tex
 
       - name: Switch to deploy branch and update PDF
         run: |
