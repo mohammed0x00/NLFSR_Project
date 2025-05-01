@@ -33,9 +33,6 @@ jobs:
           git fetch origin deploy:deploy || git checkout --orphan deploy
           git checkout deploy
 
-          mkdir -p docs
-          cp docs/Machine_Learning-Based_Assessment_of_NLFSR_Strength.pdf docs/
-
           git add docs/Machine_Learning-Based_Assessment_of_NLFSR_Strength.pdf
           git commit -m "Update PDF from master" || echo "No changes to commit"
           git push origin deploy
